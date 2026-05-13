@@ -14,4 +14,5 @@ export interface WatchlistEntry {
   movieId: string
   shelf: Shelf
   rating: number | null
+  note?: string
 }

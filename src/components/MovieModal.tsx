@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import type { Movie, Shelf, WatchlistEntry } from '../types'
 import { StarRating } from './StarRating'
 
@@ -7,6 +7,7 @@ interface Props {
   entry: WatchlistEntry | null
   onSetShelf: (shelf: Shelf) => void
   onSetRating: (rating: number) => void
+  onSetNote: (note: string) => void
   onClose: () => void
 }
 
@@ -22,7 +23,9 @@ const SHELF_COLORS: Record<string, string> = {
   watched: '#72e8a0',
 }
 
-export function MovieModal({ movie, entry, onSetShelf, onSetRating, onClose }: Props) {
+export function MovieModal({ movie, entry, onSetShelf, onSetRating, onSetNote, onClose }: Props) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
@@ -58,7 +61,7 @@ export function MovieModal({ movie, entry, onSetShelf, onSetRating, onClose }: P
           <img
             src={posterUrl}
             alt={`${movie.title} poster`}
-            className="w-20 h-30 rounded-lg object-cover flex-shrink-0"
+            className="rounded-lg object-cover flex-shrink-0"
             style={{ width: '80px', height: '120px' }}
           />
           <div className="flex flex-col justify-center gap-1.5 min-w-0">
@@ -77,7 +80,7 @@ export function MovieModal({ movie, entry, onSetShelf, onSetRating, onClose }: P
               Directed by {movie.director}
             </div>
             <div
-              className="text-xs px-2 py-0.5 rounded self-start mt-1"
+              className="px-2 py-0.5 rounded self-start mt-1"
               style={{ backgroundColor: '#2e2e2e', color: '#e8a045', fontSize: '11px' }}
             >
               {movie.genre}
@@ -134,7 +137,7 @@ export function MovieModal({ movie, entry, onSetShelf, onSetRating, onClose }: P
             <div className="px-4 pb-2">
               <div className="h-px" style={{ backgroundColor: '#2e2e2e' }} />
             </div>
-            <div className="px-4 pb-6">
+            <div className="px-4 pb-4">
               <div className="text-xs font-medium mb-3 tracking-widest uppercase" style={{ color: '#666' }}>
                 Your Rating
               </div>
@@ -153,6 +156,34 @@ export function MovieModal({ movie, entry, onSetShelf, onSetRating, onClose }: P
             </div>
           </>
         )}
+
+        {/* My Notes */}
+        <div className="px-4 pb-2">
+          <div className="h-px" style={{ backgroundColor: '#2e2e2e' }} />
+        </div>
+        <div className="px-4 pb-6">
+          <div className="text-xs font-medium mb-2 tracking-widest uppercase" style={{ color: '#666' }}>
+            My Notes
+          </div>
+          <textarea
+            ref={textareaRef}
+            value={entry?.note ?? ''}
+            onChange={e => onSetNote(e.target.value)}
+            placeholder="Jot down your thoughts…"
+            rows={3}
+            className="w-full rounded-xl px-3 py-2.5 text-sm resize-none outline-none transition-all"
+            style={{
+              backgroundColor: '#141414',
+              color: '#e0e0e0',
+              border: '1px solid',
+              borderColor: entry?.note ? '#e8a04544' : '#2a2a2a',
+              fontSize: '13px',
+              lineHeight: '1.5',
+            }}
+            onFocus={e => { e.currentTarget.style.borderColor = '#e8a04566' }}
+            onBlur={e => { e.currentTarget.style.borderColor = entry?.note ? '#e8a04544' : '#2a2a2a' }}
+          />
+        </div>
       </div>
     </div>
   )

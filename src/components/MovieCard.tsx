@@ -70,11 +70,22 @@ export function MovieCard({ movie, entry, onClick }: Props) {
         >
           {movie.genre}
         </div>
-        {entry?.shelf === 'watched' && (
-          <div className="mt-1.5">
+        <div className="flex items-center justify-between mt-1.5">
+          {entry?.shelf === 'watched' ? (
             <StarRating rating={entry.rating} size="sm" />
-          </div>
-        )}
+          ) : (
+            <span />
+          )}
+          {entry?.note && (
+            <span
+              title="Has notes"
+              className="text-xs leading-none"
+              style={{ color: '#e8a04599' }}
+            >
+              ✍
+            </span>
+          )}
+        </div>
       </div>
     </button>
   )

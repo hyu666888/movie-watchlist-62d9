@@ -29,9 +29,11 @@ export function useWatchlist() {
       return {
         ...prev,
         [movieId]: {
+          ...prev[movieId],
           movieId,
           shelf,
           rating: shelf === 'watched' ? (prev[movieId]?.rating ?? null) : null,
+          note: prev[movieId]?.note,
         },
       }
     })
@@ -47,6 +49,23 @@ export function useWatchlist() {
     }))
   }
 
+  function setNote(movieId: string, note: string) {
+    setEntries(prev => {
+      const existing = prev[movieId]
+      if (!existing && !note) return prev
+      if (!existing) {
+        return {
+          ...prev,
+          [movieId]: { movieId, shelf: null, rating: null, note },
+        }
+      }
+      return {
+        ...prev,
+        [movieId]: { ...existing, note },
+      }
+    })
+  }
+
   function getEntry(movieId: string): WatchlistEntry | null {
     return entries[movieId] ?? null
   }
@@ -56,5 +75,8 @@ export function useWatchlist() {
     return Object.values(entries).filter(e => e.shelf === shelf).length
   }
 
-  return { entries, setShelf, setRating, getEntry, shelfCount }
+  const totalWatched = Object.values(entries).filter(e => e.shelf === 'watched').length
+  const totalRated = Object.values(entries).filter(e => e.shelf === 'watched' && e.rating !== null).length
+
+  return { entries, setShelf, setRating, setNote, getEntry, shelfCount, totalWatched, totalRated }
 }

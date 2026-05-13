@@ -39,7 +39,7 @@ export default function App() {
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
   const [search, setSearch] = useState('')
   const [decade, setDecade] = useState<Decade>('all')
-  const { setShelf, setRating, getEntry, shelfCount } = useWatchlist()
+  const { setShelf, setRating, setNote, getEntry, shelfCount, totalWatched, totalRated } = useWatchlist()
 
   const query = search.trim().toLowerCase()
 
@@ -64,7 +64,7 @@ export default function App() {
         }}
       >
         <div className="max-w-2xl mx-auto">
-          <div className="flex items-baseline gap-2 mb-3">
+          <div className="flex items-baseline gap-2">
             <h1
               className="text-2xl font-bold tracking-tight"
               style={{
@@ -77,6 +77,12 @@ export default function App() {
             </h1>
             <span style={{ color: '#e8a045', fontSize: '18px' }}>✦</span>
           </div>
+          <p className="text-xs mb-3 mt-0.5" style={{ color: '#555' }}>
+            {totalWatched} of {MOVIES.length} watched
+            {totalRated > 0 && (
+              <> · <span style={{ color: '#e8a04599' }}>{totalRated} rated</span></>
+            )}
+          </p>
 
           {/* Shelf tabs */}
           <div className="flex gap-1 overflow-x-auto scrollbar-none -mx-1 px-1 mb-3">
@@ -211,6 +217,7 @@ export default function App() {
           entry={getEntry(selectedMovie.id)}
           onSetShelf={shelf => setShelf(selectedMovie.id, shelf)}
           onSetRating={rating => setRating(selectedMovie.id, rating)}
+          onSetNote={note => setNote(selectedMovie.id, note)}
           onClose={() => setSelectedMovie(null)}
         />
       )}
